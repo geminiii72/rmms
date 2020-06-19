@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//http://mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gemini.design.rmms.mapper.ToolMapper">
+
+    <select id="getToolForPlan" resultType="com.gemini.design.rmms.entity.Tool">
+        select
+        tool.t_id, t_name, t_type, t_note, sum(tr_num) as tr_num
+        from tool, tool_record
+        where tool.t_id=tool_record.t_id and tool_record.p_id=#{p_id} and tool_record.tr_type='分配'
+        group by tool.t_id
+    </select>
+
+
+    <select id="getALLResidueTool" resultType="com.gemini.design.rmms.entity.Tool">
+        select distinct tool.t_id, t_name, t_type, t_note, w_place, sum(tr_num) as tr_num
+        from warehouse as wh, tool ,tool_record as tr
+        where tr.t_id=tool.t_id
+            and tr.w_id=wh.w_id
+        group by tool.t_id
+    </select>
+
+    <delete id="deleteTool" parameterType="java.lang.String">
+        delete from user where
+        t_id in
+        <foreach collection="list" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+
+
+    <select id="getAllRecord" resultType="com.gemini.design.rmms.entity.toolRecord" >
+        SELECT tool_record.*, tool.t_name, user.u_name, warehouse.w_place
+        FROM tool_record,tool, user, warehouse
+        where tool_record.t_id = tool.t_id
+            and user.u_id = tool_record.u_id
+            and warehouse.w_id = tool_record.w_id
+    </select>
+    
+    
+    <select id="getTool" resultType="com.gemini.design.rmms.entity.Tool">
+        select  * from tool where t_id=#{t_id}
+    </select>
+
+    <insert id="insertToolRecordList" parameterType="com.gemini.design.rmms.entity.toolRecord">
+        insert into tool_record values
+        <foreach collection="list" item="record" separator=",">
+            (#{record.t_id},#{record.w_id},#{record.p_id},#{record.u_id},
+            #{record.tr_date},#{record.tr_num},#{record.tr_note})
+        </foreach>
+    </insert>
+</mapper>

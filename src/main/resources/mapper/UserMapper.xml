@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//http://mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 对应的java文件的位置-->
+<mapper namespace="com.gemini.design.rmms.mapper.UserMapper">
+
+    <select id="findUser" parameterType="com.gemini.design.rmms.entity.User" resultType="com.gemini.design.rmms.entity.User">
+        select * from user
+        <where>
+            <if test="u_id != null">
+                u_id=#{u_id}
+            </if>
+            <if test="u_phone != null">
+                and u_phone=#{u_phone}
+            </if>
+            <if test="u_pwd != null">
+                and u_pwd=#{u_pwd}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findUserForPhone" resultType="com.gemini.design.rmms.entity.User">
+        select * from user where u_phone=#{u_phone}
+    </select>
+
+
+    <select id="getAllUser" resultType="com.gemini.design.rmms.entity.User">
+        select * from user
+    </select>
+
+
+    <select id="getUser" resultType="com.gemini.design.rmms.entity.User">
+        select * from user where u_id=#{u_id}
+    </select>
+
+
+    <update id="alterUser" parameterType="com.gemini.design.rmms.entity.User">
+        update user
+        <set >
+            <if test="u_name != null" >
+                u_name=#{u_name},
+            </if>
+            <if test="u_phone != null" >
+                u_phone=#{u_phone},
+            </if>
+            <if test="u_class != null" >
+                u_class=#{u_class},
+            </if>
+            <if test="u_type != null" >
+                u_type=#{u_type},
+            </if>
+            <if test="u_pwd != null" >
+                u_pwd=#{u_pwd}
+            </if>
+        </set>
+        where u_id=#{u_id}
+    </update>
+    
+    
+    <select id="getUserForPlan" resultType="com.gemini.design.rmms.entity.User">
+        select * from user, plan_user where user.u_id=plan_user.u_id and plan_user.p_id=#{p_id}
+        group by user.u_id
+        Order by pu_isadmin asc
+    </select>
+
+
+    <insert id="insertUser" parameterType="com.gemini.design.rmms.entity.User">
+        insert into user(
+        <trim suffixOverrides=",">
+            <if test="u_name != null" >
+                u_name,
+            </if>
+            <if test="u_pwd != null" >
+                u_pwd,
+            </if>
+            <if test="u_phone != null" >
+                u_phone,
+            </if>
+            <if test="u_type != null" >
+                u_type,
+            </if>
+            <if test="u_class != null" >
+                u_class
+            </if>
+        </trim>
+        )
+        values(
+        <trim suffixOverrides=",">
+            <if test="u_name != null" >
+                #{u_name},
+            </if>
+            <if test="u_pwd != null" >
+                #{u_pwd},
+            </if>
+            <if test="u_phone != null" >
+                #{u_phone},
+            </if>
+            <if test="u_type != null" >
+                #{u_type},
+            </if>
+            <if test="u_class != null" >
+                #{u_class},
+            </if>
+        </trim>
+        )
+    </insert>
+
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        delete from user where
+         u_id in
+         <foreach collection="list" item="i" open="(" separator="," close=")">
+             #{i}
+         </foreach>
+    </delete>
+    
+    <select id="getUserList" resultType="com.gemini.design.rmms.entity.User">
+        select * from user where u_id in (
+            select u_id from plan_user where p_id in (
+                select p_id from plan where p_state='完成'
+            )
+        ) or u_id not in (
+            select u_id from plan_user
+        ) and u_type=#{type}
+    </select>
+</mapper>

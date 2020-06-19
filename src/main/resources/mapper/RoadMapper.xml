@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//http://mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gemini.design.rmms.mapper.RoadMapper">
+
+    <select id="getRoad" resultType="com.gemini.design.rmms.entity.Road">
+        select * from road where r_id=#{r_id}
+    </select>
+
+    <select id="getAllRoad" resultType="com.gemini.design.rmms.entity.Road">
+        select * from road
+    </select>
+
+
+    <delete id="deleteRoad" parameterType="java.lang.String">
+        delete from road where
+        r_id in
+        <foreach collection="list" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+
+
+    <update id="alterRoad" parameterType="com.gemini.design.rmms.entity.Road">
+        update road
+        <set>
+            <if test="r_name != null" >
+                r_name=#{r_name},
+            </if>
+            <if test="r_type != null" >
+                r_type=#{r_type},
+            </if>
+            <if test="u_id != null" >
+                u_id=#{u_id},
+            </if>
+            <if test="r_x != null" >
+                r_x=#{r_x},
+            </if>
+            <if test="r_y != null" >
+                r_y=#{r_y},
+            </if>
+            <if test="r_length != null" >
+                r_length=#{r_length},
+            </if>
+            <if test="r_width != null" >
+                r_width=#{r_width},
+            </if>
+            <if test="r_date != null" >
+                r_date=#{r_date},
+            </if>
+            <if test="r_state != null" >
+                r_state=#{r_state},
+            </if>
+            <if test="r_note != null" >
+                r_note=#{r_note},
+            </if>
+            <if test="r_m_type != null" >
+                r_m_type=#{r_m_type},
+            </if>
+            <if test="r_m_length != null" >
+                r_m_length=#{r_m_length},
+            </if>
+            <if test="r_m_width != null" >
+                r_m_width=#{r_m_width},
+            </if>
+            <if test="r_m_density != null" >
+                r_m_density=#{r_m_density},
+            </if>
+            <if test="r_m_grade != null" >
+                r_m_grade=#{r_m_grade},
+            </if>
+        </set>
+        where r_id=#{r_id}
+    </update>
+
+
+    <select id="getRoadList" resultType="com.gemini.design.rmms.entity.Road">
+        select * from road where r_state='未分配'
+    </select>
+
+
+
+    <insert id="insertRoad" parameterType="com.gemini.design.rmms.entity.Road">
+        insert into road(
+        <trim suffixOverrides=",">
+            <if test="r_name != null" >
+                r_name
+            </if>
+            <if test="r_type != null" >
+                r_type
+            </if>
+            <if test="u_id != null" >
+                u_id
+            </if>
+            <if test="r_x != null" >
+                r_x
+            </if>
+            <if test="r_y != null" >
+                r_y
+            </if>
+            <if test="r_length != null" >
+                r_length
+            </if>
+            <if test="r_width != null" >
+                r_width
+            </if>
+            <if test="r_date != null" >
+                r_date
+            </if>
+            <if test="r_state != null" >
+                r_state
+            </if>
+            <if test="r_note != null" >
+                r_note
+            </if>
+            <if test="r_m_type != null" >
+                r_m_type
+            </if>
+            <if test="r_m_length != null" >
+                r_m_length
+            </if>
+            <if test="r_m_width != null" >
+                r_m_width
+            </if>
+            <if test="r_m_density != null" >
+                r_m_density
+            </if>
+            <if test="r_m_grade != null" >
+                r_m_grade
+            </if>
+        </trim>
+        )
+        values(
+        <trim suffixOverrides=",">
+            <if test="r_name != null" >
+                r_name=#{r_name},
+            </if>
+            <if test="r_type != null" >
+                r_type=#{r_type},
+            </if>
+            <if test="u_id != null" >
+                u_id=#{u_id},
+            </if>
+            <if test="r_x != null" >
+                r_x=#{r_x},
+            </if>
+            <if test="r_y != null" >
+                r_y=#{r_y},
+            </if>
+            <if test="r_length != null" >
+                r_length=#{r_length},
+            </if>
+            <if test="r_width != null" >
+                r_width=#{r_width},
+            </if>
+            <if test="r_date != null" >
+                r_date=#{r_date},
+            </if>
+            <if test="r_state != null" >
+                r_state=#{r_state},
+            </if>
+            <if test="r_note != null" >
+                r_note=#{r_note},
+            </if>
+            <if test="r_m_type != null" >
+                r_m_type=#{r_m_type},
+            </if>
+            <if test="r_m_length != null" >
+                r_m_length=#{r_m_length},
+            </if>
+            <if test="r_m_width != null" >
+                r_m_width=#{r_m_width},
+            </if>
+            <if test="r_m_density != null" >
+                r_m_density=#{r_m_density},
+            </if>
+            <if test="r_m_grade != null" >
+                r_m_grade=#{r_m_grade},
+            </if>
+        </trim>
+        )
+    </insert>
+</mapper>

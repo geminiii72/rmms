@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//http://mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gemini.design.rmms.mapper.PlanMapper">
+
+    <select id="getPlan" resultType="com.gemini.design.rmms.entity.Plan">
+        select * from plan where p_id=#{p_id}
+    </select>
+
+    <select id="getPlanForList" resultType="com.gemini.design.rmms.entity.Plan">
+        select * from plan
+        where p_id in (
+        <foreach collection="plans" item="plan" separator=",">
+            #{plan}
+        </foreach>
+        )
+        order by p_id asc
+    </select>
+
+    <select id="getPlanUser" resultType="com.gemini.design.rmms.entity.PlanUser">
+        select  * from plan_user where u_id=#{u_id}
+        order by p_id asc
+    </select>
+
+
+    <insert id="insertPlanUser" parameterType="com.gemini.design.rmms.entity.PlanUser">
+        insert into plan_user values
+        <foreach collection="list" item="plan_user" separator=",">
+            (#{plan_user.p_id},#{plan_user.u_id},#{plan_user.pu_isadmin})
+        </foreach>
+    </insert>
+
+
+    <select id="getAllPlan" resultType="com.gemini.design.rmms.entity.Plan" >
+        select plan.*, road.r_name, u_name from plan, road, plan_user, user
+        where plan.r_id=road.r_id
+            and plan.p_id=plan_user.p_id
+            and user.u_id=plan_user.u_id
+        group by plan.p_id
+        union
+        select plan.*, "无" as r_name, u_name from plan, road, plan_user, user where p_type in('勘察')
+        group by plan.p_id
+    </select>
+
+    <delete id="deletePlan" parameterType="java.lang.String">
+        delete from plan where
+        p_id in
+        <foreach collection="list" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+
+    <insert id="insertPlan" parameterType="com.gemini.design.rmms.entity.Plan">
+        insert into plan(
+        <trim suffixOverrides=",">
+            <if test="p_type != null" >
+                p_type,
+            </if>
+            <if test="r_id != null" >
+                r_id,
+            </if>
+            <if test="u_id != null" >
+                u_id,
+            </if>
+            <if test="p_date != null" >
+                p_date,
+            </if>
+            <if test="p_note != null" >
+                p_note,
+            </if>
+            <if test="p_state != null" >
+                p_state
+            </if>
+        </trim>
+        )
+        values(
+        <trim suffixOverrides=",">
+            <if test="p_type != null" >
+                #{p_type},
+            </if>
+            <if test="r_id != null" >
+                #{r_id},
+            </if>
+            <if test="u_id != null" >
+                #{u_id},
+            </if>
+            <if test="p_date != null" >
+                #{p_date},
+            </if>
+            <if test="p_note != null" >
+                #{p_note},
+            </if>
+            <if test="p_state != null" >
+                #{p_state},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="getFinalId" resultType="java.lang.String">
+        select p_id from plan order by p_id desc limit 1
+    </select>
+
+
+</mapper>

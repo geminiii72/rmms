@@ -1,0 +1,16 @@
+.article {
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+.detial-form {
+    padding: 60px 0px;
+}
+@media (min-width: 768px) {
+    .detial-form {
+        width: 600px;
+        margin: auto;
+    }
+}
